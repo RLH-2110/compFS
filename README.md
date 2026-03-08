@@ -24,7 +24,6 @@ In testing.csv you can see which operating systems where testsed, which OS versi
             <th>Requirements</th>
             <th>Command</th>
             <th>Testing Command</th>
-            <th>Versions Tested</th>
         </tr>
     </thead>
     <tbody>
