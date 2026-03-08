@@ -1,0 +1,10 @@
+*.exe
+*.o
+*.a
+
+out.txt
+log.txt
+commit.txt
+
+*.swp
+
