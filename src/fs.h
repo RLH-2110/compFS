@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+/* temporary define for this file only, will be undefined at the end*/
+#define bool int
+
 
 #define FS_CURR -1
 
@@ -129,5 +132,7 @@ fsError close_file(FILE* file,bool log);
 	does NOT check if file is NULL
 */
 CALLER_FREES lineRead* create_lineRead(FILE* file);
+
+#undef bool
 
 #endif /* fsH */
