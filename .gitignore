@@ -1,7 +1,9 @@
 *.exe
 *.o
+*.obj
 *.a
 *.lib
+obj
 
 out.txt
 log.txt
