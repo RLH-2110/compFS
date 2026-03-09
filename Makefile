@@ -30,6 +30,11 @@ $(info    detected Haiku)
 
 endif
 
+ifeq ($(OS),Windows_NT)
+	MKDIR = cmd /C mkdir
+else
+	MKDIR = mkdir
+endif
 
 # rules
 
@@ -40,7 +45,7 @@ obj/%.o: src/%.c $(CHEADERS) obj
 	$(CC) -c $< $(CCFLAGS) -o $@
 
 obj:
-	mkdir obj
+	$(MKDIR) obj
 
 test: $(OUTPUT)
 	$(CC) -o $(TESTER_OUTPUT) $(TEST_CFILES) $(CCFLAGS) -L. -lcmpFS
