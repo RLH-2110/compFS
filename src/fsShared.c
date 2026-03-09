@@ -101,9 +101,7 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 
 	FILE *file;
 	int flags;
-	fsOpenFlags extractedFileFlags;
-	bool create = false;
-	
+	fsOpenFlags extractedFileFlags;	
 
 	if (!filePath || !fileFlags || !output){ /* if parameters are NULL */
 		fputs("Error: open_file got a does not take NULL\n",logOut);
@@ -125,8 +123,7 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 		return fseFileAlreadyExists;
 	}
 
-	if (flags == fsfNoFile && create == false && (extractedFileFlags & fsOpenFlagsDontCreate) == 0) { /*create file if it does not exist, unless we read only*/
-		create = true;
+	if (flags == fsfNoFile && (extractedFileFlags & fsOpenFlagsDontCreate) == 0) { /*create file if it does not exist, unless we read only*/
 		file = fopen(filePath,fileFlags);
 
 		/* create a new file */
