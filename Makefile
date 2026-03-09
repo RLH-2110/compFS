@@ -63,7 +63,7 @@ else
 endif
 	rm $(TESTER_OUTPUT)
 	rm log.txt out.txt src.txt 
-
+	rm -rf obj
 
 	
 .PHONY : clean clear test
