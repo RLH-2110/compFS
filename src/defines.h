@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include "int.h"
-#include "setup.h"
 
 /* /###\ */
 /*|Notes|*/

@@ -4,10 +4,10 @@
 #include <string.h>
 #include <errno.h>
 
-#include "../src/setup.h"
 #include "../src/fs.h"
 #include "../src/compat.h"
 #include "../src/int.h"
+#include "../src/defines.h"
 
 #include "tests.h"
 
@@ -49,20 +49,20 @@ FILE* file;
 
 void oom(){
 	puts("\nTESTER IS OUT OF MEMORY!");
-	close_log_file();
+	compFS_close_log_file();
 	exit(1);
 }
 
 void critical_test_fail(){
 	failed++;
 	printf("\nTest Failed!\nCritial Test failed! We cant test anything else with this failure!\nPassed: %d/%d\nFailed: %d/%d\nSkipped: %d/%d\n", passed, NUM_TESTS, failed, NUM_TESTS, skipped, NUM_TESTS);
-	close_log_file();
+	compFS_close_log_file();
 	exit(1);
 }
 
 void critical_fail(){
 	printf("Critical failure!\nPassed: %d/%d\nFailed: %d/%d\nSkipped: %d/%d\n", passed, NUM_TESTS, failed, NUM_TESTS, skipped, NUM_TESTS);
-	close_log_file();
+	compFS_close_log_file();
 	exit(1);
 }
 
@@ -370,13 +370,12 @@ void test3(){  /* own functions used: getAttributes, set_log_file, close_log_fil
 		return;
 	}
 
-	logFile = "log.txt";
-	if (set_log_file() == false){
+	if (compFS_set_log_file("log.txt") == false){
 		failed++;
 		return;
 	}
-	fputs("Logging test!\n",logOut);
-	if (close_log_file() == fseNoClose){
+	fputs("Logging test!\n",compFS_logOut);
+	if (compFS_close_log_file() == fseNoClose){
 		failed++;
 		return;
 	}
@@ -429,7 +428,7 @@ void test3(){  /* own functions used: getAttributes, set_log_file, close_log_fil
 
 		free(reader); reader = NULL;
 
-		set_log_file();
+		compFS_set_log_file("log.txt");
 
 		if (!fail){
 			puts("passed!");
@@ -705,7 +704,7 @@ void test7() { /* THIS TEST DOES NOT YET COUNT TO THE TEST COUNTER! */
 int main(int argc, char* argv[]){
 
 	puts("\nInitializing..."); /* print new line, so we have a bit of distance to the `make` output */
-	setup();
+	compFS_setup();
 
 	failed = 0;
 	passed = 0;
@@ -724,11 +723,8 @@ int main(int argc, char* argv[]){
 
 	test7();
 
-	if (scrOut != stdout)
-		close_file(scrOut,false);
-
 	printf("\n#------------------#\nPassed: %d/%d\nFailed: %d/%d\nSkipped: %d/%d\n",passed,NUM_TESTS,failed,NUM_TESTS,skipped,NUM_TESTS);
-	close_log_file();
+	compFS_close_log_file();
 	return 0;
 }
 

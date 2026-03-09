@@ -2,6 +2,7 @@
 #define fsH
 
 #include <stdio.h>
+#include "int.h"
 
 /* temporary define for this file only, will be undefined at the end*/
 #ifndef bool
@@ -14,15 +15,32 @@
 #define CALLER_FREES 	/* The caller frees that pointer or closes that file */
 #define FUNCTION_FREES 	/* the callee frees that pointer or closes that file */
 
-/* /#########\ */
-/*|ERROR TYPES|*/
-/* \#########/ */
+
 typedef enum {
 	fseNoError, fseNoOpen, fseNoClose,	fseWrongWrite, fseWrongRead,
 	fseIsDirectory,	 fseIsFile, fseNoRead, fseNoWrite, fseMemory, fseLogic,
 	fseNoCreate, fseNoDelete, fseBufferSize, fseNULLParam, fseSeekError, 
 	fseInternalFSError, fseFileAlreadyExists
 } fsError; 
+
+
+extern FILE *compFS_logOut; /* outout steam for logging. will be set by compFS_setup or compFS_set_log_file*/
+
+/* should be run first! this is needed to set compFS_logOut to stdout */
+void compFS_setup(void);
+
+/* sets an file for logging via compFS_logOut. could be called instead of compFS_setup, but its best to call compFS_setup first anyway */
+bool compFS_set_log_file(char *logfile); 
+
+/* only used by internally or by the testing tool. exits the program, or prints test info and then exists, if debug macros are defined */
+void compFS_error_exit(int status);
+
+/* Closes the log file, if it exists, and restests loggin to stdout
+	possible returns: fseNoError, fseNoClose
+*/
+fsError compFS_close_log_file(void);
+
+
 
 /* for metadata about files*/
 typedef enum {	
@@ -115,11 +133,6 @@ CALLER_FREES char* read_line(lineRead *reader, long line);
 
 
 
-
-/* Closes the log file, if it exists. 
-	possible returns: fseNoError, fseNoClose
-*/
-fsError close_log_file(void);
 
 /* closes file, if its not NULL. Logs if log is non zero, otherwhise it wont log
 	possible returns: fseNoError, fseNoClose

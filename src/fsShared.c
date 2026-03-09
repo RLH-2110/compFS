@@ -1,5 +1,4 @@
 #include "defines.h"
-#include "setup.h"
 #include "int.h"
 
 #include "fs.h" /* to get the isDirectory definition*/
@@ -34,7 +33,7 @@ fsError write_file(FILE* file, const char* buffer, size_t count, uint32 location
 
 	errno = 0;
 	if (fwrite(buffer,1,count,file) != count){
-		fprintf(logOut,"Error: write_file write error. errno: %d\n",errno);
+		fprintf(compFS_logOut,"Error: write_file write error. errno: %d\n",errno);
 		return fseWrongWrite;
 	}
 
@@ -83,7 +82,7 @@ fsOpenFlags extractOpenFlags(char const * fileFlags){
 				break;
 			
 			default:
-				fprintf(logOut,"extractOpenFlags: file flag '%c' is not recognized!\n", *curr);
+				fprintf(compFS_logOut,"extractOpenFlags: file flag '%c' is not recognized!\n", *curr);
 				
 		}
 
@@ -104,12 +103,12 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 	fsOpenFlags extractedFileFlags;	
 
 	if (!filePath || !fileFlags || !output){ /* if parameters are NULL */
-		fputs("Error: open_file got a does not take NULL\n",logOut);
+		fputs("Error: open_file got a does not take NULL\n",compFS_logOut);
 		return fseLogic;
 	}
 
 	if (fileFlags[0] == '\0'){
-		fputs("Error: open_file needs file flags!\n",logOut);
+		fputs("Error: open_file needs file flags!\n",compFS_logOut);
 		return fseLogic;
 	}
 
@@ -119,7 +118,7 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 	extractedFileFlags = extractOpenFlags(fileFlags); 
 
 	if ((extractedFileFlags & fsOpenFlagsNoOverWriting) != 0 && flags != fsfNoFile){
-		fprintf(logOut,"open_file: File %s already exists!\n",filePath);
+		fprintf(compFS_logOut,"open_file: File %s already exists!\n",filePath);
 		return fseFileAlreadyExists;
 	}
 
@@ -128,11 +127,11 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 
 		/* create a new file */
 		if (file == NULL){
-			fputs("Error: open_file create file error!",logOut);
+			fputs("Error: open_file create file error!",compFS_logOut);
 			return fseNoOpen;
 		}
 		if (fclose(file) != 0){
-			fputs("Error: open_file create file close error!",logOut);
+			fputs("Error: open_file create file close error!",compFS_logOut);
 			return fseNoOpen;
 		}
 		
@@ -141,7 +140,7 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 	}
 
 	if (flags & fsfInvalid) {
-		fprintf(logOut, "Error: open_file found file with invalid attibutes!");
+		fprintf(compFS_logOut, "Error: open_file found file with invalid attibutes!");
 
 		if (fileFlags[0] == 'r')
 			return fseNoRead;
@@ -152,25 +151,25 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 
 	/* check read access if reading is requested */
 	if ((flags & fsfReadAccess) == 0 && (extractedFileFlags & fsOpenFlagsReading) != 0){
-		fprintf(logOut,"Error: open_file has no read access to %s\n",filePath);
+		fprintf(compFS_logOut,"Error: open_file has no read access to %s\n",filePath);
 		return fseNoRead;
 	}
 
 	/* if we try to have write access, but dont have write acces.  DOES NOT TRIGGER IF THE FLAGS ARE fsfInvalid, because that likely means we will create the file later*/
 	if ((flags & fsfWriteAccess) == 0 && (extractedFileFlags & fsOpenFlagsWriting) != 0 && flags != fsfInvalid){
-		fprintf(logOut,"Error: open_file has no write access to %s\n",filePath);
+		fprintf(compFS_logOut,"Error: open_file has no write access to %s\n",filePath);
 		return fseNoWrite;
 	}
 
 	if (flags & fsfIsDirectory){
-		fprintf(logOut,"Error: open_file error! %s is a directory!\n",filePath);
+		fprintf(compFS_logOut,"Error: open_file error! %s is a directory!\n",filePath);
 		return fseIsDirectory;
 	}
 
 	file = fopen(filePath,fileFlags);
 
 	if (file == NULL){
-		fputs("Error: open_file open error!",logOut);
+		fputs("Error: open_file open error!",compFS_logOut);
 		return fseNoOpen;
 	}
 	
@@ -213,25 +212,25 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 	int chr;
 
 	if (reader == NULL){
-		fputs("Error: read_line does not take NULL!",logOut);
+		fputs("Error: read_line does not take NULL!",compFS_logOut);
 		errno = EINVAL;
 		return NULL;
 	}
 	if (reader->file == NULL){
-		fputs("Error: read_line reader->FILE can not be NULL!",logOut);
+		fputs("Error: read_line reader->FILE can not be NULL!",compFS_logOut);
 		errno = EINVAL;
 		return NULL;
 	}
 
 	if (line < 0){
-		fputs("Error: read_line cant read a negative line!",logOut);
+		fputs("Error: read_line cant read a negative line!",compFS_logOut);
 		errno = ESPIPE;
 		return NULL;
 	}
 
 	buff = malloc(buffSize); 
 	if (buff == NULL){
-		fputs("Error: read_line out of memory!",logOut);
+		fputs("Error: read_line out of memory!",compFS_logOut);
 		errno = ENOMEM;
 		return NULL;
 	}
@@ -239,7 +238,7 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 
 	if (line < reader->currentLine){
 		if (fseek(reader->file,0,SEEK_SET) != 0){
-			fputs("Error: read_line failed seeking the begining of the file",logOut);
+			fputs("Error: read_line failed seeking the begining of the file",compFS_logOut);
 			errno = EIO;
 			goto error_return;
 		}
@@ -260,13 +259,13 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 			if (chr == EOF){
 
 				if (feof(reader->file)){
-					fputs("Error: read_line function cant reach the specefied line, it does not exist", logOut);
+					fputs("Error: read_line function cant reach the specefied line, it does not exist", compFS_logOut);
 					errno = ESPIPE; /* ESPIPE  = Illegal seek */
 					goto error_return;
 				}
 
 				if (ferror(reader->file)){
-					fputs("Error: read_line function had an IO error!",logOut);
+					fputs("Error: read_line function had an IO error!",compFS_logOut);
 					errno = EIO;
 					goto error_return;
 				}
@@ -279,7 +278,7 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 	/* We are in the correct line now !*/
 	seekPos = ftell(reader->file); /* in case we need to rewind to try again with a bigger buffer*/
 	if (seekPos == -1L){
-		fputs("Error: read_line can't read current file position!",logOut);
+		fputs("Error: read_line can't read current file position!",compFS_logOut);
 		errno = EIO;
 		goto error_return;
 	}
@@ -293,12 +292,12 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 	buff = rbuff;
 
 	if (buff == NULL && feof(reader->file)){
-		fputs("Error: read_line function cant reach the specefied line, it does not exist!",logOut);
+		fputs("Error: read_line function cant reach the specefied line, it does not exist!",compFS_logOut);
 		errno = ESPIPE; /* ESPIPE  = Illegal seek */
 		goto error_return;
 	}
 	if (buff == NULL || ferror(reader->file)){
-		fputs("Error: read_line function had an IO error!",logOut);
+		fputs("Error: read_line function had an IO error!",compFS_logOut);
 		printf("\n\t\terrno: %d\n",errno); /* errno 9 */
 		errno = EIO;
 		goto error_return;
@@ -312,14 +311,14 @@ CALLER_FREES char* read_line(lineRead *reader, long line){
 		rbuff = realloc(buff, buffSize); /* dynamically make the string size bigger if possible*/
 
 		if (rbuff == NULL){
-			fputs("Error: read_line out of memory!",logOut);
+			fputs("Error: read_line out of memory!",compFS_logOut);
 			errno = ENOMEM;
 			goto error_return;
 		}
 		buff = rbuff;
 
 		if (fseek(reader->file,seekPos,SEEK_SET) != 0){
-			fputs("Error: read_line failed seeking the begining of the line!",logOut);
+			fputs("Error: read_line failed seeking the begining of the line!",compFS_logOut);
 			errno = EIO;
 			goto error_return;
 		}
@@ -360,7 +359,7 @@ fsError read_file(FILE* file, char** buffer, size_t count, uint32 location){
 	errno = 0;
 	countRead = fread(*buffer,1, count, file);
 	if (countRead != count || errno != 0){
-		fprintf(logOut,"Error: read_file write error. errno: %d\t| bytes read: %ld\t | bytes expected: %ld\n",errno,(unsigned long)countRead,(unsigned long)count);
+		fprintf(compFS_logOut,"Error: read_file write error. errno: %d\t| bytes read: %ld\t | bytes expected: %ld\n",errno,(unsigned long)countRead,(unsigned long)count);
 		return fseWrongRead;
 	}
 
@@ -391,11 +390,11 @@ fsError close_file(FILE* file,bool log){
 	if (file != NULL){
 
 		if (log)
-			fputs("closing file...",logOut);
+			fputs("closing file...",compFS_logOut);
 
 		errno = 0;
 		if (fclose(file) != 0){
-			fprintf(logOut,"close_log_file error! errno: %d\nLOG FILE COULD NOT BE CLOSED!\n",errno);
+			fprintf(compFS_logOut,"close_file error! errno: %d\nFILE COULD NOT BE CLOSED!\n",errno);
 			return fseNoClose;
 		}
 	}
@@ -406,19 +405,19 @@ fsError close_file(FILE* file,bool log){
 
 
 /* Closes the log file, if it exists. */
-fsError close_log_file(void){
+fsError compFS_close_log_file(void){
 	
-	if (logOut != stdout){
+	if (compFS_logOut != stdout){
 
-		fputs("closing log file...",logOut);
+		fputs("closing log file...",compFS_logOut);
 
 		errno = 0;
-		if (fclose(logOut) != 0){
-			fprintf(logOut,"close_log_file error! errno: %d\nLOG FILE COULD NOT BE CLOSED!\n",errno);
+		if (fclose(compFS_logOut) != 0){
+			fprintf(compFS_logOut,"close_log_file error! errno: %d\nLOG FILE COULD NOT BE CLOSED!\n",errno);
 			return fseNoClose;
 		}
 
-		logOut = stdout;
+		compFS_logOut = stdout;
 	}
 
 	return fseNoError;
@@ -438,8 +437,8 @@ CALLER_FREES lineRead* create_lineRead(FILE* file){
 
 	lineRead *reader = malloc(sizeof(lineRead));
 	if (reader == NULL){
-		fputs("create_lineRead out of memory!",logOut);
-		error_exit(1);
+		fputs("create_lineRead out of memory!",compFS_logOut);
+		compFS_error_exit(1);
 	}
 
 	reader->currentLine = 0;
