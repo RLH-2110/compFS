@@ -5,7 +5,7 @@ extern int passed;
 extern int failed;
 extern int skipped;
 
-#define NUM_TESTS 7
+#define NUM_TESTS 8
 
 /* testH */
 #endif

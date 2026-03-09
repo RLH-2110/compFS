@@ -5,6 +5,7 @@
 /*#include <fileapi.h>*/
 #include <direct.h> 
 #include <windows.h>
+#include "fs.h"
 
 fsError make_dir(const char* path) {
 	if (_mkdir(path) == 0)

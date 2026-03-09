@@ -67,12 +67,6 @@ void critical_fail(){
 }
 
 
-/*	notes:
-
-	the extractOpenFlags will not have its own tests.
-
-*/
-
 void test0(){ /* TEST 0 */ /* own functions used: strcat_c */
 		fputs("tst0 strcat_c...                 ",stdout);
 
@@ -652,8 +646,58 @@ test5_noFail:
 
 
 
-void test6() { /* THIS TEST DOES NOT YET COUNT TO THE TEST COUNTER! */
+void test6() { /* The function tested does not validate user input, if it is checked in the future, the tests may need to be updated */
+	fputs("tst6 open flag conversion...     ",stdout);
+	fail = false;
+	
+	if (extractOpenFlags(NULL) != fsOpenFlagsError)
+		goto test6_cleanup;
+
+	if (extractOpenFlags("r") 		!= (fsOpenFlagsReading | fsOpenFlagsDontCreate)	)	goto test6_cleanup;
+	if (extractOpenFlags("a") 		!= (fsOpenFlagsWriting)							)	goto test6_cleanup;
+	if (extractOpenFlags("w") 		!= (fsOpenFlagsWriting)							)	goto test6_cleanup;
+	if (extractOpenFlags("+") 		!= (fsOpenFlagsReading | fsOpenFlagsWriting)	)	goto test6_cleanup;
+	if (extractOpenFlags("x") 		!= (fsOpenFlagsNoOverWriting)					)	goto test6_cleanup;
+	if (extractOpenFlags("b") 		!= (0)											)	goto test6_cleanup;
+	if (extractOpenFlags("\0") 		!= (0)											)	goto test6_cleanup;
+
+	if (extractOpenFlags("rb")		!= (fsOpenFlagsReading | fsOpenFlagsDontCreate) 						)	goto test6_cleanup;
+	if (extractOpenFlags("r+")		!= (fsOpenFlagsReading | fsOpenFlagsDontCreate | fsOpenFlagsWriting) 	)	goto test6_cleanup;
+	if (extractOpenFlags("r+b")		!= (fsOpenFlagsReading | fsOpenFlagsDontCreate | fsOpenFlagsWriting) 	)	goto test6_cleanup;
+	if (extractOpenFlags("rb+")		!= (fsOpenFlagsReading | fsOpenFlagsDontCreate | fsOpenFlagsWriting) 	)	goto test6_cleanup;
+	if (extractOpenFlags("wb")		!= (fsOpenFlagsWriting) 												)	goto test6_cleanup;
+	if (extractOpenFlags("w+")		!= (fsOpenFlagsWriting | fsOpenFlagsReading) 							)	goto test6_cleanup;
+	if (extractOpenFlags("w+b")		!= (fsOpenFlagsWriting | fsOpenFlagsReading) 							)	goto test6_cleanup;
+	if (extractOpenFlags("wb+")		!= (fsOpenFlagsWriting | fsOpenFlagsReading) 							)	goto test6_cleanup;
+	if (extractOpenFlags("wx")		!= (fsOpenFlagsWriting | fsOpenFlagsNoOverWriting) 						)	goto test6_cleanup;
+	if (extractOpenFlags("wxb")		!= (fsOpenFlagsWriting | fsOpenFlagsNoOverWriting) 						)	goto test6_cleanup;
+	if (extractOpenFlags("wx+")		!= (fsOpenFlagsWriting | fsOpenFlagsReading | fsOpenFlagsNoOverWriting)	)	goto test6_cleanup; 
+	if (extractOpenFlags("wx+b")	!= (fsOpenFlagsWriting | fsOpenFlagsReading | fsOpenFlagsNoOverWriting)	)	goto test6_cleanup;
+	if (extractOpenFlags("wxb+")	!= (fsOpenFlagsWriting | fsOpenFlagsReading | fsOpenFlagsNoOverWriting)	)	goto test6_cleanup;
+	if (extractOpenFlags("ab")		!= (fsOpenFlagsWriting)													)	goto test6_cleanup;
+	if (extractOpenFlags("a+")		!= (fsOpenFlagsWriting | fsOpenFlagsReading)							)	goto test6_cleanup;
+	if (extractOpenFlags("a+b")		!= (fsOpenFlagsWriting | fsOpenFlagsReading)							)	goto test6_cleanup;
+	if (extractOpenFlags("ab+")		!= (fsOpenFlagsWriting | fsOpenFlagsReading)							)	goto test6_cleanup;
+
+	goto test6_noFail;
+test6_cleanup:
+	fail = true;
+test6_noFail:
+
+	if (!fail) {
+		puts("passed!");
+		passed++;
+	}
+	else {
+		puts("failed!");
+		failed++;
+	}
+
+}
+
+void test7() { /* THIS TEST DOES NOT YET COUNT TO THE TEST COUNTER! */
 	puts("TODO: add more tests!");
+	puts("TODO: Test open_file to make sure it can do r,w,a,w+ and r+");
 
 
 }
@@ -674,10 +718,11 @@ int main(int argc, char* argv[]){
 	test3();
 	test4();
 	test5();
+	test6();
 
 	/*TODO: Test open_file to make sure it can do r,w,a,w+ and r+*/
 
-	test6();
+	test7();
 
 	if (scrOut != stdout)
 		close_file(scrOut,false);

@@ -97,7 +97,7 @@ fsOpenFlags extractOpenFlags(char const * fileFlags){
 /* fileFlags is the same as fopen!*/
 
 
-fsError open_file(const char* filePath, char* fileFlags, FILE** output){
+fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** output){
 
 	FILE *file;
 	int flags;

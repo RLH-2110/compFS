@@ -4,6 +4,7 @@
 #include "defines.h"
 #include <dos.h>
 #include <stdio.h>
+#include "fs.h"
 
 /*
 https://digitalmars.com/rtl/dos.html 

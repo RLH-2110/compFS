@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include "fs.h"
 
 fsError make_dir(const char* path) {
 	if (mkdir(path, 0755) == 0)
