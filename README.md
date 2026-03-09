@@ -1,10 +1,4 @@
-> [!WARNING]
-> This readme is not complete
-
-> [!WARNING]
-> I still need to write some of the compiling scripts, since I moved this out from imgedit, and now need to compile this as a static lib.
-
-This is a private FS library that should work on Linux, Windows NT, MS-DOS and Haiku
+This is a private FS library that should work on Linux, Windows NT, MS-DOS and Haiku. It was made for my imgedit project.  
 
 Here is what you need to do to compile the source for the different operating systems.
 Linux and Haiku require Make and GCC, which are usually preinstalled.  
@@ -14,8 +8,10 @@ Some operating systems like DOS or early windows versions have scripts that requ
 
 Make for Windows: https://gnuwin32.sourceforge.net/packages/make.htm  
 GCC for Windows: https://www.mingw-w64.org/  
-  
-In testing.csv you can see which operating systems where testsed, which OS versions where tested and when they where tested.  
+
+you should only need `libcmpfs.a` or `.lib` and `src/fs.h`, but I have not tested it yet. I may update this readme when I reorganized the structure of imgedit and used this as a library.
+
+In testing.csv you can see which operating systems where tested, which OS versions where tested and when they where tested.  
 
 <table>
     <thead>
