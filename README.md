@@ -53,6 +53,10 @@ In testing.csv you can see which operating systems where tested, which OS versio
     </tbody>
 </table>
 
+# Setup and cleanup
+
+you must call compFS_setup(); when loading the library, and it would be advided to call compFS_close_log_file(); when you stop using it.
+
 # Potential Build Errors
 
 ## COMPNT / TESTNT
