@@ -170,7 +170,6 @@ fsError open_file(const char* filePath, char* fileFlags, CALLER_FREES FILE** out
 		return fseIsDirectory;
 	}
 
-open_file_skip_access_tests:
 	file = fopen(filePath,fileFlags);
 
 	if (file == NULL){
@@ -364,7 +363,7 @@ fsError read_file(FILE* file, char** buffer, size_t count, uint32 location){
 	errno = 0;
 	countRead = fread(*buffer,1, count, file);
 	if (countRead != count || errno != 0){
-		fprintf(logOut,"Error: read_file write error. errno: %d\t| bytes read: %d\t | bytes expected: %d\n",errno,countRead,count);
+		fprintf(logOut,"Error: read_file write error. errno: %d\t| bytes read: %ld\t | bytes expected: %ld\n",errno,(unsigned long)countRead,(unsigned long)count);
 		return fseWrongRead;
 	}
 

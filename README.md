@@ -40,13 +40,13 @@ In testing.csv you can see which operating systems where testsed, which OS versi
                 <a href="https://github.com/open-watcom/open-watcom-v2">Open Watcom</a><br />
             </td>
             <td>make<br /><b>OR</b><br />COMPNT</td>
-            <td>make test<br /><b>OR</b><br />NTTEST</td>
+            <td>make test<br /><b>OR</b><br />TESTNT</td>
         </tr>
         <tr>
             <td>DOS</td>
             <td><a href="https://github.com/open-watcom/open-watcom-v2">Open Watcom</a></td>
             <td>COMPDOS</td>
-            <td>COMPTEST</td>
+            <td>TESTDOS</td>
         </tr>
         <tr>
             <td>Haiku</td>
@@ -59,7 +59,7 @@ In testing.csv you can see which operating systems where testsed, which OS versi
 
 # Potential Build Errors
 
-## COMPNT / NTTEST
+## COMPNT / TESTNT
 
 ### The name specified is not recognized
 If you get this error:

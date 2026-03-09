@@ -1,6 +1,6 @@
 
 CC=gcc
-CCFLAGS = -ansi -pedantic
+CCFLAGS = -ansi -pedantic -Wall
 
 OUTPUT = libcmpFS.a
 CFILES= $(wildcard src/*.c) 
@@ -36,9 +36,12 @@ endif
 $(OUTPUT): $(OFILES)
 	ar rcs $(OUTPUT) $(OFILES)
 
-obj/%.o: src/%.c $(CHEADERS)
+obj/%.o: src/%.c $(CHEADERS) obj
 	$(CC) -c $< $(CCFLAGS) -o $@
-	
+
+obj:
+	mkdir obj
+
 test: $(OUTPUT)
 	$(CC) -o $(TESTER_OUTPUT) $(TEST_CFILES) $(CCFLAGS) -L. -lcmpFS
 	./$(TESTER_OUTPUT)

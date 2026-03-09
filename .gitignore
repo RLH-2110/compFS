@@ -1,10 +1,11 @@
 *.exe
 *.o
 *.a
+*.lib
 
 out.txt
 log.txt
 commit.txt
 
 *.swp
-
+*.img
