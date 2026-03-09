@@ -4,8 +4,10 @@
 #include <stdio.h>
 
 /* temporary define for this file only, will be undefined at the end*/
-#define bool int
-
+#ifndef bool
+#define bool short
+#define fsH_DEFINED_BOOL
+#endif
 
 #define FS_CURR -1
 
@@ -133,6 +135,9 @@ fsError close_file(FILE* file,bool log);
 */
 CALLER_FREES lineRead* create_lineRead(FILE* file);
 
+#ifdef fsH_DEFINED_BOOL
 #undef bool
+#undef fsH_DEFINED_BOOL
+#endif
 
 #endif /* fsH */
