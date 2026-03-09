@@ -23,7 +23,7 @@
 #ifndef OS_STRING
 /* we got no idea what it is, so lets assume its a POSIX based system.*/
 #define OS_STRING "UNKOWN OS"
-#define OS_POXIX
+#define OS_POSIX
 #endif
 
 

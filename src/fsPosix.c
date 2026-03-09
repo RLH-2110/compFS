@@ -39,6 +39,9 @@ fsFlags getAttributes(const char *path){
    if (S_ISDIR(statbuf.st_mode))
       return fsfIsDirectory;
 
+   if (S_ISREG(statbuf.st_mode) == false)
+      return fsfNoFile;
+
    if (statbuf.st_mode & S_IWUSR)
       flags += fsfWriteAccess;
 

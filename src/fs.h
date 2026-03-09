@@ -61,6 +61,8 @@ fsError remove_dir(const char* path);
 	if it does not exist then fsfNoFile is set
 	if it is a file, then fsfReadAccess and or fsfWriteAccess are set
 	if fsfInvalid is set, an error happened.
+
+	note: this will return fsfNoFile for posix things that arent directories or regular files. this is only meant to work with regular files and directories.
 */
 fsFlags getAttributes(const char *path);
 
